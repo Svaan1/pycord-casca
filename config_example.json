@@ -1,0 +1,16 @@
+{
+    "discord_bot": {
+        "discord_token": "",
+        "cogs": [],
+        "command_prefix": []
+    },
+    
+    "database": {
+        "dialect": "",
+        "username": "",
+        "password": "",
+        "host": "",
+        "port": "",
+        "dbname": ""
+    }
+}
