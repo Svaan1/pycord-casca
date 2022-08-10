@@ -4,21 +4,22 @@ from utils.default import Config
 
 config = Config().bot_config
 
-class MyBot(commands.Bot):
+
+class MyBot(discord.Bot):
     def __init__(self):
-        super().__init__(
-            command_prefix=config["command_prefix"],
-            intents=discord.Intents.all()
-            )
-        self.loaded_cogs = config["cogs"]
+        super().__init__(debug_guilds=[
+            1002615670749536326, 596410699496947712])
         self.startup()
-    
+
     def startup(self):
-        for cog in self.loaded_cogs:
+        for cog in config["cogs"]:
             try:
-                self.load_extension(cog)
-            except Exception:
+                self.load_extension(f"cogs.{cog}")
+                print(f"{cog} loaded")
+            except Exception as why:
                 print(f"Failed to load {cog}")
+                print(why)
+
 
 bot = MyBot()
 bot.run(config["token"])
