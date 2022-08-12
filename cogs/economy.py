@@ -9,25 +9,23 @@ class Economy(commands.Cog):
         self.database = Economy_Table()
 
     @discord.slash_command(description="Returns an user's (you as default) amount of money")
-    async def check_balance(self, ctx, user: discord.Option(discord.Member, required=False)):
-        if user:
-            user = user.id
-        else:
-            user = ctx.author.id
-        user = self.database.query_user(user)
-        await ctx.respond(user.money)
+    async def balance(self, ctx, user: discord.Option(discord.Member, required=False)):
+        if not user:
+            user = ctx.author
+        user_balance = self.database.query_user(user.id)
+        # Transform in an embed
+        await ctx.respond(f"{user.mention}'s balance: {user_balance.money} credits")
 
     @discord.slash_command(description="Gives your money to someone else (you're brave.)")
     async def give_money(self, ctx, receiver: discord.Option(discord.Member), value: discord.Option(int)):
-        giver = ctx.author.id
-        receiver = receiver.id
+        giver = ctx.author
 
-        if self.database.query_user(giver).money < value:
+        if not self.database.user_has_enough_money(giver.id, value):
             return await ctx.respond("Hey, you dont have that much!")
         else:
             # Ok, this is dangerous, i should implement a way to only apply changes if both operations are done
-            self.database.subtract_money(giver, value)
-            self.database.add_money(receiver, value)
+            self.database.subtract_money(giver.id, value)
+            self.database.add_money(receiver.id, value)
             return await ctx.respond("Done!")
 
 

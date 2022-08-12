@@ -31,30 +31,35 @@ class Economy_Table(Database):
             return str(self.money)
 
     def query_user(self, user_id):
-        try:
-            return self.session.query(self.Economy).filter_by(id=user_id).first()
-        except:
-            self.add_user(user_id)
-            return self.query_user(user_id)
+        user = self.session.query(self.Economy).filter_by(id=user_id).first()
+        if user:
+            return user
+        else:
+            return self.add_user(user_id)
 
     def add_user(self, user_id):
         new_user = self.Economy(id=user_id, money=INITIAL_MONEY)
         self.session.add(new_user)
         self.session.commit()
+        return new_user
+
+    def user_has_enough_money(self, user_id, desired_money: int):
+        return self.query_user(user_id).money >= desired_money
 
     def update_users_money(self, user_id, new_money_value):
         statement = update(self.Economy).where(
             self.Economy.id == user_id).values(money=new_money_value)
         self.session.execute(statement)
         self.session.commit()
+        return self.query_user(user_id)
 
     def add_money(self, user_id, value_to_be_added):
         user_money = self.query_user(user_id).money
-        self.update_users_money(
+        return self.update_users_money(
             user_id, new_money_value=user_money + value_to_be_added)
 
     def subtract_money(self, user_id, value_to_be_subtracted):
         user_money = self.query_user(user_id).money
         value_to_be_subtracted = min(user_money, value_to_be_subtracted)
-        self.update_users_money(
+        return self.update_users_money(
             user_id, new_money_value=user_money - value_to_be_subtracted)
