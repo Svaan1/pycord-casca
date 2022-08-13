@@ -1,8 +1,7 @@
 {
     "discord_bot": {
         "discord_token": "",
-        "cogs": [],
-        "command_prefix": []
+        "cogs": []
     },
     
     "database": {

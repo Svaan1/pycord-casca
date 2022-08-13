@@ -9,15 +9,20 @@ class Economy(commands.Cog):
         self.database = Economy_Table()
 
     @discord.slash_command(description="Returns an user's (you as default) amount of money")
-    async def balance(self, ctx, user: discord.Option(discord.Member, required=False)):
+    async def balance(self, ctx, user: discord.Option(discord.Member, "Want to check someone else's balance?", required=False)):
         if not user:
             user = ctx.author
-        user_balance = self.database.query_user(user.id)
-        # Transform in an embed
-        await ctx.respond(f"{user.mention}'s balance: {user_balance.money} credits")
+        user_balance = self.database.query_user(user.id).money
+
+        embed = discord.Embed(
+            title=f"Balance",
+            description=f"{user.mention} has {user_balance} credits",
+        )
+
+        await ctx.respond(embed=embed, ephemeral=True)
 
     @discord.slash_command(description="Gives your money to someone else (you're brave.)")
-    async def give_money(self, ctx, receiver: discord.Option(discord.Member), value: discord.Option(int)):
+    async def give_money(self, ctx, receiver: discord.Option(discord.Member, "Who shall be the lucky one?"), value: discord.Option(int, "How much are you willing to give?")):
         giver = ctx.author
 
         if not self.database.user_has_enough_money(giver.id, value):

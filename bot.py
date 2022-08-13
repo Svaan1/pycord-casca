@@ -14,7 +14,7 @@ class MyBot(Bot):
         for cog in config["cogs"]:
             try:
                 self.load_extension(f"cogs.{cog}")
-                print(f"{cog} loaded")
+                print(f"{cog} loaded.")
             except Exception as why:
                 print(f"Failed to load {cog}")
                 print(why)
