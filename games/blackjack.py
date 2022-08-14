@@ -1,5 +1,26 @@
+from tkinter import N
+import discord
 from deck_of_cards.deck_of_cards import DeckOfCards, Card
 SUITS = {0: "♠️", 1: "♥️", 2: "♦️", 3: "♣️"}
+
+
+class Game_Embed():
+    def __init__(self, player_hand, dealer_hand):
+        self.player_hand = player_hand
+        self.dealer_hand = dealer_hand
+        self.embed = self.get_embed()
+
+    def get_embed(self):
+        embed = discord.Embed(
+            title="Blackjack"
+        )
+        embed.add_field(
+            name="Your hand", value=f"{self.player_hand}", inline=True)
+        embed.add_field(name=chr(173), value=chr(173))
+        embed.add_field(name="Dealer's hand",
+                             value=f"{self.dealer_hand}", inline=True)
+
+        return embed
 
 
 class Hand():
@@ -15,35 +36,83 @@ class Hand():
 
     def add_to_hand(self, cards):
         for card in cards:
-            card_name = card.name[0]
+            card_name = card.name[0:2] if card.value == 10 else card.name[0]
+            match card_name:
+                case "J" | "Q" | "K":
+                    self.value += 10
+                case "A":
+                    if self.value + 11 > 21:
+                        self.value += 1
+                    else:
+                        self.value += 11
+                case _:
+                    self.value += card.value
+
             self.cards.append({
                 "name": card_name,
                 "suit": SUITS[card.suit]
             })
-            if card_name in ["J", "Q", "K"]:
-                self.value += 10
-            elif card_name == "A":
-                if self.value + 11 > 21:
-                    self.value += 1
-                else:
-                    self.value += 11
-            else:
-                self.value += card.value
 
 
 class Blackjack():
-    def __init__(self):
+    def __init__(self, bet, user):
+        self.user = user
+        self.bet = bet
         self.deck = DeckOfCards()
         self.players_hand = Hand()
         self.dealers_hand = Hand()
         self.initial_draw()
+        self.update_embed()
+
+    def update_embed(self):
+        self.embed = Game_Embed(self.players_hand, self.dealers_hand).embed
 
     def hit(self, hand: Hand, number_of_cards):
         cards = [self.deck.give_random_card()
                  for _ in range(number_of_cards)]
 
         hand.add_to_hand(cards)
+        self.update_embed()
 
     def initial_draw(self):
         self.hit(self.players_hand, 2)
         self.hit(self.dealers_hand, 1)
+
+    def player_hit(self):
+        self.hit(self.players_hand, 1)
+
+    def dealer_hit(self):
+        self.hit(self.dealers_hand, 1)
+
+    def check_result(self):
+        player = self.players_hand.value
+        dealer = self.dealers_hand.value
+
+        def dealer_wins():
+            self.result = "Player Loses"
+            self.color = discord.Colour.from_rgb(225, 6, 0)  # red
+
+        def player_wins():
+            self.result = "Player Wins"
+            self.color = discord.Colour.from_rgb(57, 255, 20)  # green
+
+        def tie():
+            self.result = "Tie"
+            self.color = discord.Colour.blue()
+            self.bet = 0
+
+        if player > 21:
+            dealer_wins()
+        elif dealer > 21:
+            player_wins()
+        elif player > dealer:
+            player_wins()
+        elif dealer > player:
+            dealer_wins()
+        elif player == dealer:
+            tie()
+
+        self.embed.color = self.color
+        self.embed.add_field(
+            name=self.result, value=f"**{self.bet}** credits", inline=False)
+        return self.result

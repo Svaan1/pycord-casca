@@ -31,7 +31,7 @@ class Economy(commands.Cog):
             # Ok, this is dangerous, i should implement a way to only apply changes if both operations are done
             self.database.subtract_money(giver.id, value)
             self.database.add_money(receiver.id, value)
-            return await ctx.respond("Done!")
+            return await ctx.respond("Done!", ephemeral=True)
 
 
 def setup(bot):

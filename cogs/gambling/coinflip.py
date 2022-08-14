@@ -2,7 +2,6 @@ import random
 import discord
 from discord.ext import commands
 from utils.sql_handler import Economy_Table
-from games.blackjack import Blackjack
 
 
 class Gambling(commands.Cog):
@@ -26,27 +25,14 @@ class Gambling(commands.Cog):
         if victory:
             new_balance = self.database.add_money(ctx.author.id, bet)
             embed_message = f"Nice, you won {bet} credits!"
-            embed.color = discord.Colour.green()
+            embed.color = discord.Colour.from_rgb(57, 255, 20)
         else:
             new_balance = self.database.subtract_money(ctx.author.id, bet)
             embed_message = f"Oh no, you lost {bet} credits..."
-            embed.color = discord.Colour.red()
+            embed.color = discord.Colour.from_rgb(225, 6, 0)
 
         embed.add_field(
             name=embed_message, value=f"You now got {new_balance} credits")
-
-        await ctx.respond(embed=embed)
-
-    @discord.slash_command(description="To be a poker command")
-    async def blackjack(self, ctx):
-        game = Blackjack()
-        embed = discord.Embed(
-            title="Blackjack"
-        )
-        embed.add_field(name="Your hand",
-                        value=f"{game.players_hand}", inline=True)
-        embed.add_field(name="Dealer's hand",
-                        value=f"{game.dealers_hand}", inline=True)
 
         await ctx.respond(embed=embed)
 

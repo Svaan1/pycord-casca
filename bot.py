@@ -1,5 +1,4 @@
 from discord import Bot
-from discord.ext import commands
 from utils.default import Config
 
 config = Config().bot_config
@@ -12,12 +11,7 @@ class MyBot(Bot):
 
     def startup(self):
         for cog in config["cogs"]:
-            try:
-                self.load_extension(f"cogs.{cog}")
-                print(f"{cog} loaded.")
-            except Exception as why:
-                print(f"Failed to load {cog}")
-                print(why)
+            print(self.load_extension(f"cogs.{cog}"))
 
 
 bot = MyBot()
