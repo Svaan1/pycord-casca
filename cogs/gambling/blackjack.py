@@ -62,21 +62,21 @@ class BlackJack(commands.Cog):
 
         class Button_View(discord.ui.View):
 
-            @discord.ui.button(label="Hit", style=discord.ButtonStyle.primary)
+            @discord.ui.button(label="Hit", style=discord.ButtonStyle.success)
             async def hit_button_callback(self, button, interaction):
                 if interaction.user.id == user:
                     await players_turn(game, interaction)
                 else:
                     await interaction.response.send_message("Hey, thats not for you!", ephemeral=True)
 
-            @discord.ui.button(label="Stand", style=discord.ButtonStyle.primary)
+            @discord.ui.button(label="Stand", style=discord.ButtonStyle.danger)
             async def stand_button_callback(self, button, interaction):
                 if interaction.user.id == user:
                     await dealers_turn(game, interaction)
                 else:
                     await interaction.response.send_message("Hey, thats not for you!", ephemeral=True)
 
-        await ctx.respond(embed=game.embed, view=Button_View())
+        message = await ctx.respond(embed=game.embed, view=Button_View())
 
 
 def setup(bot):

@@ -16,6 +16,12 @@ class Fun(commands.Cog):
         await ctx.respond("Ok.", ephemeral=True, delete_after=1)
         await message.reply("fodase")
 
+    @discord.user_command()
+    async def teste(self, ctx, user: discord.Member):
+        print(user.name)
+        print(user.nick)
+        print(user.activity)
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))

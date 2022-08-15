@@ -1,4 +1,4 @@
-from discord import Bot
+from discord import Bot, Intents
 from utils.default import Config
 
 config = Config().bot_config
@@ -6,12 +6,13 @@ config = Config().bot_config
 
 class MyBot(Bot):
     def __init__(self):
-        super().__init__()
+        intents = Intents().all()
+        super().__init__(intents=intents)
         self.startup()
 
     def startup(self):
-        for cog in config["cogs"]:
-            print(self.load_extension(f"cogs.{cog}"))
+        for cog in Config().get_cogs():
+            print(self.load_extension(cog))
 
 
 bot = MyBot()
