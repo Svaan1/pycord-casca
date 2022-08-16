@@ -11,6 +11,13 @@ class Events(commands.Cog):
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="você"))
         print('We have logged in as {0.user}'.format(self.bot))
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author == self.bot.user:
+            return
+        if self.bot.user.mentioned_in(message):
+            await message.reply("👽")
+
 
 def setup(bot):
     bot.add_cog(Events(bot))
