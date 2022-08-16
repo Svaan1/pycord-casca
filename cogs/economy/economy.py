@@ -20,7 +20,7 @@ async def balance(ctx, user: discord.Option(discord.Member, "Want to check someo
 
 
 @economy.command(name="give_money", description="Gives your money to someone else (you're brave.)")
-async def give_money(ctx, receiver: discord.Option(discord.Member, "Who shall be the lucky one?"), value: discord.Option(int, "How much are you willing to give?")):
+async def give_money(ctx, receiver: discord.Option(discord.Member, "Who shall be the lucky one?"), value: discord.Option(int, "How much are you willing to give?", min_value=1)):
     giver = ctx.author
 
     if not database.user_has_enough_money(giver.id, value):

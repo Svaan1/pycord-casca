@@ -15,6 +15,8 @@ class Events(commands.Cog):
     async def on_message(self, message):
         if message.author == self.bot.user:
             return
+        if self.bot.user.mentioned_in(message):
+            await message.reply("👽")
 
 
 def setup(bot):

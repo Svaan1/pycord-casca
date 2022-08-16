@@ -54,11 +54,15 @@ class Economy_Table(Database):
         return self.query_user(user_id)
 
     def add_money(self, user_id, value_to_be_added):
+        if value_to_be_added < 1:
+            return
         user_money = self.query_user(user_id).money
         return self.update_users_money(
             user_id, new_money_value=user_money + value_to_be_added)
 
     def subtract_money(self, user_id, value_to_be_subtracted):
+        if value_to_be_subtracted < 1:
+            return
         user_money = self.query_user(user_id).money
         value_to_be_subtracted = min(user_money, value_to_be_subtracted)
         return self.update_users_money(

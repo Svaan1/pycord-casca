@@ -13,9 +13,15 @@ class Config():
 
     def get_cogs(self):
         result = []
-        for cog in self.bot_config["cogs"]:
+
+        def add_file(file):
+            if file.endswith(".py"):
+                extension = f"cogs.{cog}.{file[:-3]}"
+                result.append(extension)
+
+        for cog in set(self.bot_config["cogs"]):
             for file in os.listdir(f"./cogs/{cog}"):
-                if file.endswith(".py"):
-                    extension = f"cogs.{cog}.{file[:-3]}"
-                    result.append(extension)
+                add_file(file)
+            for file in os.listdir("./cogs/"):
+                add_file(file)
         return result
