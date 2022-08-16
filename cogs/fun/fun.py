@@ -11,9 +11,16 @@ class Fun(commands.Cog):
         await ctx.respond("Hi!")
 
     @discord.message_command()
-    async def mad_casca(self, ctx, message: discord.Message):
+    async def fodase(self, ctx, message: discord.Message):
+
         await ctx.respond("Ok.", ephemeral=True, delete_after=1)
-        await message.reply("don't care")
+        await message.reply("fodase")
+
+    @discord.user_command()
+    async def teste(self, ctx, user: discord.Member):
+        print(user.name)
+        print(user.nick)
+        print(user.activity)
 
 
 def setup(bot):
